@@ -1,15 +1,22 @@
+package page;
+
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import common.enums.AwaitingTimeEnum;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class GamePage {
+public class TypingPage {
+
+    @FindBy(how = How.ID, using = "host_start")
+    private SelenideElement startLink;
 
     @FindBy(how = How.ID, using = "inputtext")
-    private SelenideElement inputTexz;
+    private SelenideElement inputText;
 
     @FindBy(how = How.ID, using = "typefocus")
     private SelenideElement typeFocus;
@@ -17,7 +24,12 @@ public class GamePage {
     @FindBy(how = How.ID, using = "afterfocus")
     private SelenideElement afterFocus;
 
-    public GamePage type(){
+    public void type(AwaitingTimeEnum awaitingTime) {
+        if (startLink.isDisplayed()) {
+            startLink.click();
+        }
+        Selenide.sleep(awaitingTime.getAmountOfSeconds());
+
         typeFocus.waitUntil(Condition.exist, 30000).waitUntil(Condition.visible, 30000);
         StringBuilder wholeText = new StringBuilder();
         Pattern pattern = Pattern.compile("(<span>)(.*?)(</span>)");
@@ -31,20 +43,10 @@ public class GamePage {
             wholeText.append(matcher.group(2));
         }
         System.out.println("Text:" + wholeText.toString());
-        String text = wholeText.toString().replace("с", "c").replace("С", "C")
-            .replace("Т", "T").replace("Н", "H").replace("А", "A")
-            .replace("Е", "E").replace("о", "o").replace("О", "O");
-        for(String word : text.split(" ")){
+        String text = wholeText.toString().replace("c", "с").replace("o", "о");
+        for (String word : text.split(" ")) {
             System.out.println(word);
-            inputTexz.waitUntil(Condition.empty, 10000).setValue(word + " ");
+            inputText.waitUntil(Condition.empty, 10000).setValue(word + " ");
         }
-
-        return this;
     }
-
-    public static void main(String[] args) {
-        new GamePage().type();
-    }
-
-
 }
