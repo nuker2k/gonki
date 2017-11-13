@@ -1,22 +1,26 @@
-import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
+import common.enums.AwaitingTimeEnum;
+import common.enums.GamePrivacyEnum;
+import common.enums.LanguageEnum;
 import org.junit.Test;
-import static com.codeborne.selenide.Selenide.sleep;
+import page.LoginPage;
 
 import static com.codeborne.selenide.Selenide.open;
 
-public class GonkiTest {
 
+public class GonkiTest extends LoadConfiguration {
 
     @Test
-    public void test(){
-        Configuration.browser = "chrome";
+    public void customGameTest() {
         open("http://klavogonki.ru/", LoginPage.class)
             .login("radical", "haifisch1521")
-            .chooseGame()
-            .setTimeout("20")
-            .startGame()
-            .startGame()
-            .type();
-        sleep(20000);
+            .chooseCustomGame()
+            .setLanguage(LanguageEnum.RUSSIAN)
+            .setPrivacy(GamePrivacyEnum.PRIVATE_GAME)
+            .setTimeout(AwaitingTimeEnum.TEN_SECONDS)
+            .proceedToTypingPage()
+            .type(AwaitingTimeEnum.TEN_SECONDS);
+
+        Selenide.sleep(20000);
     }
 }
